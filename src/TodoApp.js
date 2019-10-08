@@ -8,38 +8,16 @@ import { red } from '@material-ui/core/colors';
 import TodoList from './component/TodoList';
 import TodoForm from './component/TodoForm';
 import uuid from 'uuid';
+import useTodoState from './hooks/useTodoState';
+import useLocalStorageState from './hooks/useLocalStorage';
 function TodoApp(){
-    const initialTodo = JSON.parse(window.localStorage.getItem('todos')|| [
-        
-    ]);
-    const [todos,setTodos] = useState(initialTodo);
+    const initialTodo = JSON.parse(window.localStorage.getItem('todos')|| []);
+    const {todos,addTodo,removeTodo,toggleTodo,editTodo} = useTodoState(initialTodo);
     useEffect(()=>{
         window.localStorage.setItem('todos',JSON.stringify(todos))
         
     },[todos])
-    const addTodo = newTodoText =>{
-        let numId = uuid();
-        setTodos([...todos,{id:numId ,task: newTodoText,completed:false}]);
-        console.log(numId);
-    };
-    const removeTodo = todoId =>{
-        //filter todo
-        const updateTodo = todos.filter(idx=> idx.id !== todoId);
-        //call setTodos from useState to set new array
-        setTodos(updateTodo);
-    }
-    const toggleTodo = todoId=>{
-      const updateTodo = todos.map(idx=>
-            idx.id ===todoId ? {...idx,completed : !idx.completed} : idx            
-        )
-        setTodos(updateTodo);
-    }
-    const editTodo = (todoId, newTask) => {
-        const updateTodo = todos.map(idx=>
-            idx.id === todoId ? {...todos, task : newTask} : idx
-            );
-        setTodos(updateTodo);
-    }
+    
     return(
         <Paper style={{
             boxSizing:'border-box',
